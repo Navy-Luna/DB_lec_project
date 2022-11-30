@@ -38,13 +38,14 @@ stmt = conn.createStatement();
 ResultSet rs;
 String sql;
 PreparedStatement ps;
-
-sql = "select snumber from student where sidentifier='"+id+"'";
-rs=stmt.executeQuery(sql);
-while(rs.next()){
-	String snum = rs.getString(1);
+if(id!=null){
+	sql = "select snumber from student where sidentifier='"+id+"'";
+	rs=stmt.executeQuery(sql);
+	String snum;
+	while(rs.next()){
+		snum = rs.getString(1);
+	}
 }
-
 
 sql = "select * from club where cnumber=" + clubID;
 rs = stmt.executeQuery(sql);
@@ -212,12 +213,7 @@ int anum = rs.getInt(1);
 				<div class="col-lg-6">
 					<img src="images/knu_logo.jpg" alt="Image" class="img-fluid">
 				</div>
-				<%if(id==null){%>
-					<p class="text-black-50"><a  class="btn btn-primary" href="#">지원하기</a></p>
-				<%}else{ %>
-					<p class="text-black-50"><a  class="btn btn-primary" href="apply.jsp">지원하기</a></p>
-				<%} %>
-				
+					<p class="text-black-50"><a  class="btn btn-primary" href="apply.jsp?clubID=<%out.println(clubID); %>">Apply</a></p>
 			</div>
 
 		</div>
