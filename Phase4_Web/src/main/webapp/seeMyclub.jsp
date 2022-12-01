@@ -3,7 +3,7 @@
 <%@ page language="java" import="java.text.*,java.sql.*" %>
 <%
 //로그인 관련
-session.setAttribute("id", "knu2018000040");
+session.setAttribute("id", "knu2018000013");
 // session.removeAttribute("id");
 String id = (String)session.getAttribute("id");
 

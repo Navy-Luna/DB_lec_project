@@ -49,96 +49,42 @@ while(rs.next()){
 	snum = rs.getString(1);
 }
 
-
+// 동아리명, 동아리 종류, 동아리 타입
 sql = "select * from club where cnumber=" + clubID;
 rs = stmt.executeQuery(sql);
 rs.next();
-Date cdate = rs.getDate(2);
 String cname = rs.getString(3);
 String ccollege = rs.getString(4);
 String ctype = rs.getString(5);
 
-// 평점
-sql = "select avg(rrating), count(*) from review where cno=" + clubID;
+/* 지원서 출력을 위한 작업 */
+// 지원서가 NULL인 애들을 불러옴
+String[] applyName = new String[15];
+String[] applySnum = new String[15];
+String[] applyContent = new String[15];
+sql = "SELECT * from student WHERE student.snumber IN (SELECT apply.sno FROM apply WHERE apass IS NULL AND CNO = " + clubID + ")";
 rs = stmt.executeQuery(sql);
-rs.next();
-Float rt = rs.getFloat(1);
-String rating = String.format("%.1f", rt);
-if (rs.getInt(2) == 0)
-    rating = "평가없음";
 
-// 부장 이름
-sql = "select s.sname from student s, member m where m.cno = " + clubID
-        + " and m.sno = s.snumber and m.mposition = '부장'";
-rs = stmt.executeQuery(sql);
-rs.next();
-String boss = rs.getString(1);
-
-// 성비
-sql = "select ssex, count(*) from student, member where cno = " + clubID
-        + " and snumber = sno group by ssex";
-
-rs = stmt.executeQuery(sql);
-float mnum = 0;
-float fnum = 0;
-float mrate = 0;
-float frate = 0;
-while (rs.next()) {
-    String sex = rs.getString(1);
-    if (sex.compareTo("M") == 0)
-        mnum = rs.getInt(2);
-    else
-        fnum = rs.getInt(2);
-}
-if (mnum + fnum != 0) {
-    mrate = mnum / (mnum + fnum) * 100;
-    frate = fnum / (mnum + fnum) * 100;
-}
-
-// 누적 지원자 수
-sql = "select count(*) from student where exists(select * from apply where snumber = sno and cno = ?)";
-ps = conn.prepareStatement(sql);
-ps.setInt(1, Integer.parseInt(clubID));
-rs = ps.executeQuery();
-rs.next();
-int anum = rs.getInt(1);
-
-
-
-
-
-// 멤버면 1 아니면 0 그리고 부장이면 1 아니면 0
-int member = 0;
-int leader = 0;
-
-if(id == null) // 비회원
+int applyCount = 0;
+while(rs.next())
 {
-	member = 0;
-	leader = 0;
+	applyName[applyCount] = rs.getString(6);
+	applySnum[applyCount] = rs.getString(1);
+	applyCount += 1;
 }
-else // 일단 로그인 된 상태
+
+if(applyCount > 0) // 한명이라도 지원자 있는경우
 {
-	sql = "select * from member where sno=\'" + snum + "\' and cno = " + clubID;	
-	rs = stmt.executeQuery(sql);
-	boolean memCheck = rs.next();
+	sql = "select sname, sno, acontent, apass from apply join student on snumber=sno where sno = ? and cno = " + clubID;
+	ps = conn.prepareStatement(sql);
 	
-	if(!memCheck) // 회원인데 member 아님
+	for(int i=0; i<applyCount; i++)
 	{
-		member = 0;
-		leader = 0;
-		System.out.println("회원인데 멤버 아님");
-	}
-	else if(memCheck && !rs.getString(4).equals("부장")) // member이고 부장이 아닌 경우
-	{
-		member = 1;
-		leader = 0;
-		System.out.println("멤버인데 부장 아님");
-	}
-	else // member이고 부장임
-	{
-		member = 1;
-		leader = 1;
-		System.out.println("멤버인데 부장임");
+		ps.setString(1, applySnum[i]);
+		rs = ps.executeQuery();
+		rs.next();
+		
+		applyContent[i] = rs.getString(3); // 지원서 내용을 저장!
 	}
 }
 
@@ -168,7 +114,7 @@ else // 일단 로그인 된 상태
 	<link rel="stylesheet" href="css/aos.css">
 	<link rel="stylesheet" href="css/style.css">
 
-	<title>KNUClubs &mdash; <%out.println(cname);%></title>
+	<title>동아리관리 &mdash; <%out.println(cname);%></title>
 	
 	<style>
 	.col-lg-6 .text-black-50{
@@ -196,7 +142,7 @@ else // 일단 로그인 된 상태
 
 					<ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
 						<li><a href="index.html">Home</a></li>						
-						<li><a href="#">Club Search</a></li>
+						<li><%out.println("<a href=\"manageMyclub.jsp?clubID=" + clubID + "\" >Manage Home</a>"); %></li>
 						<%if(id==null){%>
 							<li><a href="#">Sign In</a></li>
 						<%}else{ %>	
@@ -224,15 +170,105 @@ else // 일단 로그인 된 상태
 		<div class="container">
 			<div class="row justify-content-center align-items-center">
 				<div class="col-lg-9 text-center mt-5">
-					<h1 class="heading" data-aos="fade-up"><%out.println(cname);%></h1>
+					<h1 class="heading" data-aos="fade-up">지원서 확인 / 정보 수정</h1>
 
 					<nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
 						<ol class="breadcrumb text-center justify-content-center">
 							<li class="breadcrumb-item "><a href="index.html">Home</a></li> <!-수정필요!-->
-							<li class="breadcrumb-item active text-white-50" aria-current="page">Club Search</li><!-수정필요!-->
+							<li class="breadcrumb-item active text-white-50"><%out.println("<a href=\"manageMyclub.jsp?clubID=" + clubID + "\" >Manage Home</a>"); %></li><!-수정필요!-->
 						</ol>
 					</nav>
 				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="section bg-light">
+		<div class="container">
+			<div class="row">
+				<div class="col-6 col-lg-3"  data-aos="fade-up" data-aos-delay="300">
+					<div class="box-feature mb-4">
+						<span class="flaticon-house mb-4 d-block"></span>
+						<h3 class="text-black mb-3 font-weight-bold"><%=applyName[0]%>(<%=applySnum[0]%>)</h3>
+						<p class="text-black-50"><%=applyContent[0]%></p>
+						<p><%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=1&snum=" + applySnum[0] + "\" class=\"learn-more\" >"); %>
+						ACCEPT<%out.println("</a>"); %>&nbsp;&nbsp;&nbsp;<%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=0&snum=" + applySnum[0] + "\" class=\"learn-more\" >"); %>
+						REJECT<%out.println("</a>"); %></p>
+					</div>
+				</div>
+				<div class="col-6 col-lg-3"  data-aos="fade-up" data-aos-delay="400">
+					<div class="box-feature mb-4">
+						<span class="flaticon-house-2 mb-4 d-block-3"></span>
+						<h3 class="text-black mb-3 font-weight-bold"><%=applyName[1]%>(<%=applySnum[1]%>)</h3>
+						<p class="text-black-50"><%=applyContent[1]%></p>
+						<p><%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=1&snum=" + applySnum[1] + "\" class=\"learn-more\" >"); %>
+						ACCEPT<%out.println("</a>"); %>&nbsp;&nbsp;&nbsp;<%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=0&snum=" + applySnum[1] + "\" class=\"learn-more\" >"); %>
+						REJECT<%out.println("</a>"); %></p>
+					</div>
+				</div>
+				<div class="col-6 col-lg-3"  data-aos="fade-up" data-aos-delay="500">
+					<div class="box-feature mb-4">
+						<span class="flaticon-building mb-4 d-block"></span>
+						<h3 class="text-black mb-3 font-weight-bold"><%=applyName[2]%>(<%=applySnum[2]%>)</h3>
+						<p class="text-black-50"><%=applyContent[2]%></p>
+						<p><%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=1&snum=" + applySnum[2] + "\" class=\"learn-more\" >"); %>
+						ACCEPT<%out.println("</a>"); %>&nbsp;&nbsp;&nbsp;<%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=0&snum=" + applySnum[2] + "\" class=\"learn-more\" >"); %>
+						REJECT<%out.println("</a>"); %></p>
+					</div>
+				</div>
+				<div class="col-6 col-lg-3"  data-aos="fade-up" data-aos-delay="600">
+					<div class="box-feature mb-4">
+						<span class="flaticon-house-3 mb-4 d-block-1"></span>
+						<h3 class="text-black mb-3 font-weight-bold"><%=applyName[3]%>(<%=applySnum[3]%>)</h3>
+						<p class="text-black-50"><%=applyContent[3]%></p>
+						<p><%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=1&snum=" + applySnum[3] + "\" class=\"learn-more\" >"); %>
+						ACCEPT<%out.println("</a>"); %>&nbsp;&nbsp;&nbsp;<%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=0&snum=" + applySnum[3] + "\" class=\"learn-more\" >"); %>
+						REJECT<%out.println("</a>"); %></p>
+					</div>
+				</div>	
+
+				<div class="col-6 col-lg-3"  data-aos="fade-up" data-aos-delay="300">
+					<div class="box-feature mb-4">
+						<span class="flaticon-house-4 mb-4 d-block"></span>
+						<h3 class="text-black mb-3 font-weight-bold"><%=applyName[4]%>(<%=applySnum[4]%>)</h3>
+						<p class="text-black-50"><%=applyContent[4]%></p>
+						<p><%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=1&snum=" + applySnum[4] + "\" class=\"learn-more\" >"); %>
+						ACCEPT<%out.println("</a>"); %>&nbsp;&nbsp;&nbsp;<%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=0&snum=" + applySnum[4] + "\" class=\"learn-more\" >"); %>
+						REJECT<%out.println("</a>"); %></p>
+					</div>
+				</div>
+				<div class="col-6 col-lg-3"  data-aos="fade-up" data-aos-delay="400">
+					<div class="box-feature mb-4">
+						<span class="flaticon-building mb-4 d-block-3"></span>
+						<h3 class="text-black mb-3 font-weight-bold"><%=applyName[5]%>(<%=applySnum[5]%>)</h3>
+						<p class="text-black-50"><%=applyContent[5]%></p>
+						<p><%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=1&snum=" + applySnum[5] + "\" class=\"learn-more\" >"); %>
+						ACCEPT<%out.println("</a>"); %>&nbsp;&nbsp;&nbsp;<%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=0&snum=" + applySnum[5] + "\" class=\"learn-more\" >"); %>
+						REJECT<%out.println("</a>"); %></p>
+					</div>
+				</div>
+				<div class="col-6 col-lg-3"  data-aos="fade-up" data-aos-delay="500">
+					<div class="box-feature mb-4">
+						<span class="flaticon-house mb-4 d-block"></span>
+						<h3 class="text-black mb-3 font-weight-bold"><%=applyName[6]%>(<%=applySnum[6]%>)</h3>
+						<p class="text-black-50"><%=applyContent[6]%></p>
+						<p><%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=1&snum=" + applySnum[6] + "\" class=\"learn-more\" >"); %>
+						ACCEPT<%out.println("</a>"); %>&nbsp;&nbsp;&nbsp;<%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=0&snum=" + applySnum[6] + "\" class=\"learn-more\" >"); %>
+						REJECT<%out.println("</a>"); %></p>
+					</div>
+				</div>
+				<div class="col-6 col-lg-3"  data-aos="fade-up" data-aos-delay="600">
+					<div class="box-feature mb-4">
+						<span class="flaticon-house-1 mb-4 d-block-1"></span>
+						<h3 class="text-black mb-3 font-weight-bold"><%=applyName[7]%>(<%=applySnum[7]%>)</h3>
+						<p class="text-black-50"><%=applyContent[7]%></p>
+						<p><%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=1&snum=" + applySnum[7] + "\" class=\"learn-more\" >"); %>
+						ACCEPT<%out.println("</a>"); %>&nbsp;&nbsp;&nbsp;<%out.println("<a href=\"pass.jsp?clubID=" + clubID + "&sel=0&snum=" + applySnum[7] + "\" class=\"learn-more\" >"); %>
+						REJECT<%out.println("</a>"); %></p>
+					</div>
+				</div>	
+
 			</div>
 		</div>
 	</div>
@@ -242,90 +278,18 @@ else // 일단 로그인 된 상태
 		<div class="container">
 			<div class="row text-left mb-5">
 				<div class="col-12">
-					<h2 class="font-weight-bold heading text-primary mb-4"><%out.println(cname+"동아리"); %></h2>
+					<h2 class="font-weight-bold heading text-primary mb-4">동아리 정보 수정:</h2>
 				</div>
-				<div class="col-lg-6">
-					<p class="text-black-50"><%out.println("구분: "+ccollege + " 동아리" + "(" + ctype + ")"); %></p>
-					<p class="text-black-50"><%out.println("개설 날짜: " + cdate); %></p>
-					<p class="text-black-50"><%out.println("평점: " + rating); %></p>
-					<p class="text-black-50"><%out.println("부장: " + boss); %></p>
-					<p class="text-black-50"><%out.println(
-                            "남녀 성비:" + "    (남)" + String.format("%.1f", mrate) + "   (여)"
-                                    + String.format("%.1f", frate)); %></p>
-					<p class="text-black-50"><%out.println("누적 지원자 수: " + anum); %></p>
-				</div>
-				<div class="col-lg-6">
-					<img src="images/knu_logo.jpg" alt="Image" class="img-fluid">
-				</div>
-				<%if(id==null){%>
-					<p class="text-black-50"><a  class="btn btn-primary" href="#">지원하기</a></p>
-				<%}else if(member==0 && leader==0){ %>
-					<p class="text-black-50"><a  class="btn btn-primary" href="apply.jsp">지원하기</a></p>
-				<%}else if(member==1 && leader==0){%>
-				<%
-					out.println("<p class=\"text-black-50\"><a  class=\"btn btn-primary\" href=\"out.jsp?clubID=" + clubID + "\">탈퇴하기</a></p>");
-				%>
-				<%}else{%>
-				<%
-					out.println("<p class=\"text-black-50\"><a  class=\"btn btn-primary\" href=\"manageMyclub.jsp?clubID=" + clubID + "\">동아리관리</a></p>");
-				%>
-				<%} %>
-				
-			</div>
-
-		</div>
-	</div>
-
-
-
-	<div class="section sec-testimonials bg-light">
-		<div class="container">
-			<div class="row mb-5 align-items-center">
-				<div class="col-md-6">
-					<h2 class="font-weight-bold heading text-primary mb-4 mb-md-0">Reviews</h2>
-				</div>
-				<div class="col-md-6 text-md-end">
-					<div id="testimonial-nav">
-						<span class="prev" data-controls="prev">Prev</span>
-
-						<span class="next" data-controls="next">Next</span>
-					</div>
+				<div style="color:black; font-weight:400; font-size:2.0em">
+					Testing
 				</div>
 			</div>
-
-			<div class="row">
-				<div class="col-lg-4"></div>
-			</div>
-			<div class="testimonial-slider-wrap">
-				<div class="testimonial-slider">
-				<%
-				int rnumber;
-				String rtitle;
-				String sname;
-				String sdepartment;
-				try {
-	                // 리뷰 목록
-	                sql = "select rnumber, rtitle, sname, sdepartment from review, student where sno=snumber and cno = " + clubID+"order by rdate desc";
-	                rs = stmt.executeQuery(sql);
-	                while (rs.next()) {
-	                   rnumber=rs.getInt(1);
-	                   rtitle=rs.getString(2);
-	                   sname=rs.getString(3);
-	                   sdepartment = rs.getString(4);
-	                   out.println("<div class=\"item\"><div class=\"testimonial\"><img src=\"images/knu_ch.jpeg\" alt=\"Image\" class=\"img-fluid rounded-circle w-25 mb-4\">");
-	                   out.println("<h3 class=\"h5 text-primary\">"+ sname +"</h3>");
-	                   out.println("<p class=\"text-black-50\">"+ sdepartment +"</p>");
-	                   out.println("<p>"+rtitle+"</p>");
-	                   out.println("<a href=\"review_content.jsp?rno="+rnumber+"\"><img src=\"images/comment.png\" alt=\"cmt\"></a>");
-	                   if(member==1 && leader==1) // 부장인 경우
-	                	   out.println("<a href=\"deleteReview.jsp?rno="+rnumber+"\"><img src=\"images/delete.png\" alt=\"cmt\"></a>");
-	                   out.println("</div></div>");
-	                }
-				}catch (SQLException ex2) {
-	                    System.out.println("sql error = " + ex2.getMessage());
-	             
-	                }
-				%>
+			<div class="row text-left mb-5">
+				<div class="col-12">
+					<h2 class="font-weight-bold heading text-primary mb-4">동아리원 추가:</h2>
+				</div>
+				<div style="color:black; font-weight:400; font-size:2.0em">
+					Testing
 				</div>
 			</div>
 		</div>

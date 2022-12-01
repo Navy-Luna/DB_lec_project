@@ -161,7 +161,7 @@ int anum = rs.getInt(1);
 
 					<ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
 						<li><a href="index.html">Home</a></li>						
-						<li><a href="application.jsp">Application</a></li>
+						<li><%out.println("<a href=\"application.jsp?clubID="+ clubID + "\">Application</a></li>");%></li>
 						<%if(id==null){%>
 							<li><a href="#">Sign In</a></li>
 						<%}else{ %>	
@@ -194,7 +194,7 @@ int anum = rs.getInt(1);
 					<nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
 						<ol class="breadcrumb text-center justify-content-center">
 							<li class="breadcrumb-item "><a href="index.html">Home</a></li> <!-수정필요!-->
-							<li class="breadcrumb-item active text-white-50"><a href="application.jsp">Application</a></li><!-수정필요!-->
+							<li class="breadcrumb-item active text-white-50"><%out.println("<a href=\"application.jsp?clubID="+ clubID + "\">Application</a></li>");%><!-수정필요!-->
 						</ol>
 					</nav>
 				</div>
