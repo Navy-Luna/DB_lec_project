@@ -2,11 +2,10 @@
     pageEncoding="UTF-8"%>
 <%@ page language="java" import="java.text.*,java.sql.*" %>
 <%
-//로그인 관련
-String id = (String)session.getAttribute("id");
+/* 동아리 멤버 삭제용 jsp */
 //url로 전달된 동아리ID 받아오기
+String snum = request.getParameter("snum");
 String clubID = request.getParameter("clubID");
-
 	
 String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
 String USER_UNIVERSITY = "KNU_CLUB";
@@ -36,18 +35,10 @@ ResultSet rs;
 String sql;
 PreparedStatement ps;
 
-sql = "select snumber from student where sidentifier='"+id+"'";
-rs=stmt.executeQuery(sql);
-String snum=null; // 사용자의 학번을 조회한다.
-while(rs.next()){
-	snum = rs.getString(1);
-}
-
-
-// 동아리 탈퇴
-sql = "DELETE FROM MEMBER WHERE SNO = '"+ snum +"' and CNO = " + clubID;
+sql = "delete from member where sno = '" + snum + "' and cno = " + clubID;
 stmt.executeUpdate(sql);
-out.println("동아리 탈퇴 완료되었습니다.");
+out.println("동아리원을 삭제하였습니다.");
+
 
 %>
 
@@ -55,7 +46,7 @@ out.println("동아리 탈퇴 완료되었습니다.");
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>탈퇴완료</title>
+<title>동아리원 삭제</title>
 </head>
 <body>
 </body>

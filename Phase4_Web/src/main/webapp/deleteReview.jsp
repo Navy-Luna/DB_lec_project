@@ -2,10 +2,11 @@
     pageEncoding="UTF-8"%>
 <%@ page language="java" import="java.text.*,java.sql.*" %>
 <%
+/* 리뷰 삭제 jsp */
 //로그인 관련
 String id = (String)session.getAttribute("id");
 //url로 전달된 동아리ID 받아오기
-String clubID = request.getParameter("clubID");
+String rno = request.getParameter("rno");
 
 	
 String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
@@ -44,10 +45,11 @@ while(rs.next()){
 }
 
 
-// 동아리 탈퇴
-sql = "DELETE FROM MEMBER WHERE SNO = '"+ snum +"' and CNO = " + clubID;
+//리뷰 삭제
+sql = "delete from review where rnumber = " + rno;
 stmt.executeUpdate(sql);
-out.println("동아리 탈퇴 완료되었습니다.");
+out.println("리뷰 삭제가 완료되었습니다.");
+
 
 %>
 
@@ -55,7 +57,7 @@ out.println("동아리 탈퇴 완료되었습니다.");
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>탈퇴완료</title>
+<title>리뷰삭제</title>
 </head>
 <body>
 </body>
