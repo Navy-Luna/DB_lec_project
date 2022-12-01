@@ -12,7 +12,7 @@ String URL = "jdbc:oracle:thin:@112.157.15.34:1521:xe";
 String USER_UNIVERSITY = "dbproject";
 String USER_PASSWD = "comp322";
 Connection conn = null;
-Statement stmt = null;
+Statement stmt;
 
 try {
     // Load a JDBC Driver for oracle DBMS
