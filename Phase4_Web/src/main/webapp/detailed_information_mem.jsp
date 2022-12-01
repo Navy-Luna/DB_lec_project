@@ -3,8 +3,6 @@
 <%@ page language="java" import="java.text.*,java.sql.*" %>
 <%
 //로그인 관련
-session.setAttribute("id", "knu2020000029");
-session.removeAttribute("id");
 String id = (String)session.getAttribute("id");
 String clubID = "15";
 
@@ -46,8 +44,9 @@ PreparedStatement ps;
 
 sql = "select snumber from student where sidentifier='"+id+"'";
 rs=stmt.executeQuery(sql);
+String snum=null; // 사용자의 학번을 조회한다.
 while(rs.next()){
-	String snum = rs.getString(1);
+	snum = rs.getString(1);
 }
 
 
@@ -103,6 +102,47 @@ ps.setInt(1, Integer.parseInt(clubID));
 rs = ps.executeQuery();
 rs.next();
 int anum = rs.getInt(1);
+
+
+
+
+
+// 멤버면 1 아니면 0 그리고 부장이면 1 아니면 0
+int member = 0;
+int leader = 0;
+
+if(id == null) // 비회원
+{
+	member = 0;
+	leader = 0;
+}
+else // 일단 로그인 된 상태
+{
+	sql = "select * from member where sno=\'" + snum + "\' and cno = " + clubID;	
+	rs = stmt.executeQuery(sql);
+	boolean memCheck = rs.next();
+	
+	if(!memCheck) // 회원인데 member 아님
+	{
+		member = 0;
+		leader = 0;
+		System.out.println("회원인데 멤버 아님");
+	}
+	else if(memCheck && !rs.getString(4).equals("부장")) // member이고 부장이 아닌 경우
+	{
+		member = 1;
+		leader = 0;
+		System.out.println("멤버인데 부장 아님");
+	}
+	else // member이고 부장임
+	{
+		member = 1;
+		leader = 1;
+		System.out.println("멤버인데 부장임");
+	}
+}
+
+
 %>
 
 <!doctype html>
@@ -219,8 +259,14 @@ int anum = rs.getInt(1);
 				</div>
 				<%if(id==null){%>
 					<p class="text-black-50"><a  class="btn btn-primary" href="#">지원하기</a></p>
-				<%}else{ %>
+				<%}else if(member==0 && leader==0){ %>
 					<p class="text-black-50"><a  class="btn btn-primary" href="apply.jsp">지원하기</a></p>
+				<%}else if(member==1 && leader==0){%>
+				<%
+					out.println("<p class=\"text-black-50\"><a  class=\"btn btn-primary\" href=\"out.jsp?clubID=" + clubID + "\">탈퇴하기</a></p>");
+				%>
+				<%}else{%>
+					<p class="text-black-50"><a  class="btn btn-primary" href="#">동아리관리</a></p>
 				<%} %>
 				
 			</div>
@@ -269,6 +315,8 @@ int anum = rs.getInt(1);
 	                   out.println("<p class=\"text-black-50\">"+ sdepartment +"</p>");
 	                   out.println("<p>"+rtitle+"</p>");
 	                   out.println("<a href=\"review_content.jsp?rno="+rnumber+"\"><img src=\"images/comment.png\" alt=\"cmt\"></a>");
+	                   if(member==1 && leader==1) // 부장인 경우
+	                	   out.println("<a href=\"review_content.jsp?rno="+rnumber+"\"><img src=\"images/comment.png\" alt=\"cmt\"></a>");
 	                   out.println("</div></div>");
 	                }
 				}catch (SQLException ex2) {

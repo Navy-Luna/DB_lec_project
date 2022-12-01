@@ -3,7 +3,7 @@
 <%@ page language="java" import="java.text.*,java.sql.*" %>
 <%
 //로그인 관련
-session.setAttribute("id", "knu2020000029");
+session.setAttribute("id", "knu2022000008");
 // session.removeAttribute("id");
 String id = (String)session.getAttribute("id");
 
@@ -181,7 +181,6 @@ while(rs.next())
 				</div>
 				
 			</div>
-
 		</div>
 	</div>
 
@@ -189,51 +188,34 @@ while(rs.next())
 
 	<div class="section sec-testimonials bg-light">
 		<div class="container">
-			<div class="row mb-5 align-items-center">
-				<div class="col-md-6">
-					<h2 class="font-weight-bold heading text-primary mb-4 mb-md-0">Reviews</h2>
+			<div class="row text-left mb-5">
+				<div class="col-12">
+					<h2 class="font-weight-bold heading text-primary mb-4">지원한 동아리:</h2>
 				</div>
-				<div class="col-md-6 text-md-end">
-					<div id="testimonial-nav">
-						<span class="prev" data-controls="prev">Prev</span>
+				<div style="color:black; font-weight:400; font-size:1.5em">
+					<%
+						int rowcount2 = 0;
+					
+						String query2 = "select c.cname, a.apass from apply a, student s, club c where a.sno = s.snumber and c.cnumber = a.cno and snumber = \'" + snum + "\'";
+						rs = stmt.executeQuery(query2);
 
-						<span class="next" data-controls="next">Next</span>
-					</div>
+						while(rs.next())
+						{
+							String clubNames = rs.getString(1);
+							String pass = rs.getString(2);
+							if(pass == null)
+								pass = "검토 중";
+						
+							out.println("<p> > 동아리 이름: " + clubNames + " || 합/불 여부: " + pass + "</p>");
+							rowcount2 += 1;
+						}
+						
+						// ResultSet의 행의 개수
+						if (rowcount2 == 0)
+							out.println("<p>지원한 동아리가 없습니다.</p>");	
+					%>
 				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-4"></div>
-			</div>
-			<div class="testimonial-slider-wrap">
-				<div class="testimonial-slider">
-				<%
-				int rnumber;
-				String rtitle;
-				String sname;
-				String sdepartment;
-				try {
-	                // 리뷰 목록
-	                sql = "select rnumber, rtitle, sname, sdepartment from review, student where sno=snumber and cno = " + 15 +"order by rdate desc";
-	                rs = stmt.executeQuery(sql);
-	                while (rs.next()) {
-	                   rnumber=rs.getInt(1);
-	                   rtitle=rs.getString(2);
-	                   sname=rs.getString(3);
-	                   sdepartment = rs.getString(4);
-	                   out.println("<div class=\"item\"><div class=\"testimonial\"><img src=\"images/knu_ch.jpeg\" alt=\"Image\" class=\"img-fluid rounded-circle w-25 mb-4\">");
-	                   out.println("<h3 class=\"h5 text-primary\">"+ sname +"</h3>");
-	                   out.println("<p class=\"text-black-50\">"+ sdepartment +"</p>");
-	                   out.println("<p>"+rtitle+"</p>");
-	                   out.println("<a href=\"review_content.jsp?rno="+rnumber+"\"><img src=\"images/comment.png\" alt=\"cmt\"></a>");
-	                   out.println("</div></div>");
-	                }
-				}catch (SQLException ex2) {
-	                    System.out.println("sql error = " + ex2.getMessage());
-	             
-	                }
-				%>
-				</div>
+				
 			</div>
 		</div>
 	</div>
