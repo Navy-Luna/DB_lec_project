@@ -131,7 +131,7 @@ location.href = detailed_information.jsp;
 					<a href="index.html" class="logo m-0 float-start">KNUClubs</a>
 
 					<ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
-						<li><a href="index.html">Home</a></li>						
+						<li><a href="index.html">Club Search</a></li>						
 						<!-- <li><a href="club_serach.jsp">Club Search</a></li> -->
 						<%if(id==null){%>
 							<li><a href="#">Sign In</a></li>
@@ -140,7 +140,7 @@ location.href = detailed_information.jsp;
 							<a href="#"><%out.println(id); %></a>
 							<ul class="dropdown">
 								<li><a href="#">Sign Out</a></li>
-								<li><a href="#">My Clubs</a></li>
+								<li><a href="seeMyclub.jsp">My Clubs</a></li>
 								<li><a href="#">Settings</a></li>
 							</ul>
 						<%} %>
