@@ -3,6 +3,7 @@
 <%@ page language="java" import="java.text.*,java.sql.*" %>
 <%
 //로그인 관련
+request.setCharacterEncoding("utf-8"); 
 String id = (String)session.getAttribute("id");
 String clubID = request.getParameter("clubID");
 
@@ -80,7 +81,7 @@ String form = rs.getString(1);
 	<link rel="stylesheet" href="css/aos.css">
 	<link rel="stylesheet" href="css/style.css">
 
-	<title>KNUClubs &mdash; <%out.println(cname);%></title>
+	<title><%out.println(cname);%> 지원하기</title>
 	
 	<style>
 	.col-lg-6 .text-black-50{
@@ -132,7 +133,7 @@ if(id==null){%>
 
 					<ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
 						<li><a href="index.html">Home</a></li>						
-						<li><a href="club_serach.jsp">Club Search</a></li>
+						<!-- <li><a href="club_serach.jsp">Club Search</a></li> -->
 						<%if(id==null){%>
 							<li><a href="#">Sign In</a></li>
 						<%}else{ %>	
@@ -265,3 +266,7 @@ if(id==null){%>
     <script src="js/custom.js"></script>
   </body>
   </html>
+  <%
+ 	stmt.close();
+  	conn.close();
+  %>

@@ -3,6 +3,7 @@
 <%@ page language="java" import="java.text.*,java.sql.*" %>
 <%
 //로그인 관련
+request.setCharacterEncoding("utf-8"); 
 session.setAttribute("id", "knu2020000029");
 session.removeAttribute("id");
 String id = (String)session.getAttribute("id");
@@ -38,10 +39,10 @@ stmt = conn.createStatement();
 ResultSet rs;
 String sql;
 PreparedStatement ps;
+String snum;
 if(id!=null){
 	sql = "select snumber from student where sidentifier='"+id+"'";
 	rs=stmt.executeQuery(sql);
-	String snum;
 	while(rs.next()){
 		snum = rs.getString(1);
 	}
@@ -151,7 +152,7 @@ int anum = rs.getInt(1);
 
 					<ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
 						<li><a href="index.html">Home</a></li>						
-						<li><a href="club_serach.jsp">Club Search</a></li>
+						<!-- <li><a href="club_serach.jsp">Club Search</a></li> -->
 						<%if(id==null){%>
 							<li><a href="#">Sign In</a></li>
 						<%}else{ %>	
@@ -259,7 +260,7 @@ int anum = rs.getInt(1);
 	                   out.println("<h3 class=\"h5 text-primary\">"+ sname +"</h3>");
 	                   out.println("<p class=\"text-black-50\">"+ sdepartment +"</p>");
 	                   out.println("<p>"+rtitle+"</p>");
-	                   out.println("<a href=\"review_content.jsp?rno="+rnumber+"\"><img src=\"images/comment.png\" alt=\"cmt\"></a>");
+	                   out.println("<a href=\"review_content.jsp?rnum="+rnumber+"\"><img src=\"images/comment.png\" alt=\"cmt\"></a>");
 	                   out.println("</div></div>");
 	                }
 				}catch (SQLException ex2) {
@@ -326,3 +327,7 @@ int anum = rs.getInt(1);
     <script src="js/custom.js"></script>
   </body>
   </html>
+  <%
+ 	stmt.close();
+  	conn.close();
+  %>

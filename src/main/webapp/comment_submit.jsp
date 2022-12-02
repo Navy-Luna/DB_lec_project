@@ -3,10 +3,10 @@
 <%@ page language="java" import="java.text.*,java.sql.*" %>
 <%
 //parameter 받기
-
+request.setCharacterEncoding("utf-8"); 
 String id = (String)session.getAttribute("id");
-String clubID = request.getParameter("clubid");
-String acontent=request.getParameter("acontent");
+String rnum = request.getParameter("rnum");
+String tcontent=request.getParameter("tcontent");
 
 String URL = "jdbc:oracle:thin:@112.157.15.34:1521:xe";
 String USER_UNIVERSITY = "dbproject";
@@ -40,48 +40,61 @@ stmt = conn.createStatement();
 ResultSet rs;
 String sql;
 
-
-sql = "select snumber from student where sidentifier='"+id+"'";
-rs=stmt.executeQuery(sql);
-String snum = "";
-while(rs.next()){
-	snum = rs.getString(1);
+if(rnum != null && id !=null && tcontent!=null){
+	try{
+		sql = "select snumber from student where sidentifier='"+id+"'";
+		rs=stmt.executeQuery(sql);
+		String snum = "";
+		while(rs.next()){
+			snum = rs.getString(1);
+		}
+		
+		sql = "select tnumber from commentt order by tnumber desc";
+		rs=stmt.executeQuery(sql);
+		int nextnum = 1;
+		if(rs.next()){
+			nextnum = rs.getInt(1) + 1;
+		}
+		sql = "insert into commentt values(?,?,?,?,to_char(sysdate,'yyyy-mm-dd'))";
+		PreparedStatement ps = conn.prepareStatement(sql);
+		
+		int rno = Integer.parseInt(rnum);
+		int sno = Integer.parseInt(snum);
+		
+		ps.setInt(1,nextnum);
+		ps.setInt(2,rno);
+		ps.setInt(3,sno);
+		ps.setString(4, tcontent);
+		ps.executeUpdate();
+		System.out.println("성공!");
+	}catch(SQLException ex){
+		System.out.println("err");
+	}
 }
-
-sql = "select anumber from apply order by anumber desc";
-rs=stmt.executeQuery(sql);
-int nextnum = 1;
-if(rs.next()){
-	nextnum = rs.getInt(1) + 1;
-}
-System.out.println(clubID);
-sql = "insert into apply values(?,?,?,?,?)";
-PreparedStatement ps = conn.prepareStatement(sql);
-
-int cid = Integer.parseInt(clubID);
-
-ps.setInt(1, nextnum);
-ps.setString(2, snum);
-ps.setInt(3, cid);
-ps.setString(4, acontent);
-ps.setString(5, null);
-ps.executeUpdate();
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Apply submit</title>
+<title>Comment submit</title>
 </head>
 <body>
-<script>
-	alert('제출 성공!');
-	history.go(-2);
-</script>
+<%
+if(id==null){
+	stmt.close();
+  	conn.close();
+%>
+	<script>
+		alert('로그인 해주세요.');
+		history.go(-1);
+	</script>
+<%}else{%>
 </body>
 </html>
 <%
  	stmt.close();
   	conn.close();
+  	response.sendRedirect("./review_content.jsp?rnum="+rnum);
+  	}
   %>
