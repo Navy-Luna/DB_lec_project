@@ -280,16 +280,27 @@ if(applyCount > 0) // 한명이라도 지원자 있는경우
 				<div class="col-12">
 					<h2 class="font-weight-bold heading text-primary mb-4">동아리 정보 수정:</h2>
 				</div>
-				<div style="color:black; font-weight:400; font-size:2.0em">
-					Testing
+				<div style="color:black; font-weight:400; font-size:1.5em">
+					<form action="edit_info.jsp?clubID=7">
+					1. 동아리명: <input type="text" name="clubname" size=10><br>
+					<%out.println("2. 동아리ID <input type=\"text\" name=\"clubId\" size=3 value=\""+ clubID +"\"><br>"); %>
+					3. 동아리종류(단대|중앙|학과): <input type="text" name="clubcollege" size=10><br>
+					4. 동아리타입: <input type="text" name="clubtype" size=10><br>
+					5. 동아리지원양식: <input type="text" name="clubform" size=30>
+					<input type="submit" name="send" value="Submit">
+					</form>
 				</div>
 			</div>
 			<div class="row text-left mb-5">
 				<div class="col-12">
 					<h2 class="font-weight-bold heading text-primary mb-4">동아리원 추가:</h2>
 				</div>
-				<div style="color:black; font-weight:400; font-size:2.0em">
-					Testing
+				<div style="color:black; font-weight:400; font-size:1.7em">
+				<form action="edit_info.jsp">
+					<%out.println("동아리ID: <input type=\"text\" name=\"clubId\" size=3 value=\""+ clubID +"\"><br>"); %>
+					추가하고자하는 학생의 학번을 입력하세요: <input type="text" name="ssn" size=10>
+					<input type="submit" name="send" value="Submit">
+				</form>
 				</div>
 			</div>
 		</div>
