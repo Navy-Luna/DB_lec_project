@@ -37,7 +37,7 @@ PreparedStatement ps;
 
 sql = "delete from member where sno = '" + snum + "' and cno = " + clubID;
 stmt.executeUpdate(sql);
-out.println("동아리원을 삭제하였습니다.");
+
 
 
 %>
@@ -49,5 +49,9 @@ out.println("동아리원을 삭제하였습니다.");
 <title>동아리원 삭제</title>
 </head>
 <body>
+<script>
+	alert('동아리원이 삭제되었습니다.');
+	history.go(-1);
+</script>
 </body>
 </html>

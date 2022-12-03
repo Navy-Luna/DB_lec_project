@@ -47,7 +47,7 @@ while(rs.next()){
 // 동아리 탈퇴
 sql = "DELETE FROM MEMBER WHERE SNO = '"+ snum +"' and CNO = " + clubID;
 stmt.executeUpdate(sql);
-out.println("동아리 탈퇴 완료되었습니다.");
+
 
 %>
 
@@ -58,5 +58,9 @@ out.println("동아리 탈퇴 완료되었습니다.");
 <title>탈퇴완료</title>
 </head>
 <body>
+<script>
+	alert('동아리 탈퇴 완료되었습니다.');
+	history.go(-1);
+</script>
 </body>
 </html>

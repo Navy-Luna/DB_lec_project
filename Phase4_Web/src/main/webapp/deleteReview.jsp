@@ -48,7 +48,6 @@ while(rs.next()){
 //리뷰 삭제
 sql = "delete from review where rnumber = " + rno;
 stmt.executeUpdate(sql);
-out.println("리뷰 삭제가 완료되었습니다.");
 
 
 %>
@@ -60,5 +59,10 @@ out.println("리뷰 삭제가 완료되었습니다.");
 <title>리뷰삭제</title>
 </head>
 <body>
+<script>
+	alert('리뷰가 삭제되었습니다.');
+	history.go(-1);
+</script>
+
 </body>
 </html>

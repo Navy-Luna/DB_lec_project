@@ -50,7 +50,6 @@ stmt.executeUpdate(sql);
 // 기존 동아리 부장을 일반 부원으로 변경
 sql = "update member set mposition='회원' where cno=" + clubID + "and sno='" + snum + "'";
 stmt.executeUpdate(sql);
-out.println("직위가 정상적으로 변경되었습니다.");
 %>
 
 <!DOCTYPE html>
@@ -60,5 +59,11 @@ out.println("직위가 정상적으로 변경되었습니다.");
 <title>리더 임명</title>
 </head>
 <body>
+<script>
+	alert('직위가 정상적으로 변경되었습니다.');
+</script>
+<script type="text/javascript">
+   location.href="Home.jsp";
+</script>
 </body>
 </html>

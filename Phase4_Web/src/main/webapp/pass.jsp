@@ -40,13 +40,15 @@ if(selection == 0) // 지원서 불합격
 {
 	sql = "update apply set apass=\'N\' where cno=" + clubID + "and sno='" + snum + "'";
 	stmt.executeUpdate(sql);
-	out.println("해당 학생을 불합격시켰습니다.");
+	out.println("<script> alert('해당 학생을 불합격시켰습니다.');</script>");
+	out.println("<script> history.go(-1);</script>");
 }
 else
 {
 	sql = "update apply set apass=\'Y\' where cno=" + clubID + "and sno='" + snum + "'";
 	stmt.executeUpdate(sql);
-	out.println("해당 학생을 합격시켰습니다.");
+	out.println("<script> alert('해당 학생을 합격시켰습니다.');</script>");
+	out.println("<script> history.go(-1);</script>");
 	
 	sql = "select * from member";
 	
