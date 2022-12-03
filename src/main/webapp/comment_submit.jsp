@@ -3,7 +3,7 @@
 <%@ page language="java" import="java.text.*,java.sql.*" %>
 <%
 //parameter 받기
-request.setCharacterEncoding("utf-8"); 
+request.setCharacterEncoding("utf-8");
 String id = (String)session.getAttribute("id");
 String rnum = request.getParameter("rnum");
 String tcontent=request.getParameter("tcontent");

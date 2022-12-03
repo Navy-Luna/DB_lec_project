@@ -129,13 +129,13 @@ if(id==null){%>
 		<div class="container">
 			<div class="menu-bg-wrap">
 				<div class="site-navigation">
-					<a href="index.html" class="logo m-0 float-start">KNUClubs</a>
+					<a href="Home.jsp" class="logo m-0 float-start">KNUClubs</a>
 
 					<ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
-						<li><a href="index.html">Club Search</a></li>						
+						<li><a href="Home.jsp">Club Search</a></li>						
 						<!-- <li><a href="club_serach.jsp">Club Search</a></li> -->
 						<%if(id==null){%>
-							<li><a href="#">Sign In</a></li>
+							<li><a href="login_page.jsp">Sign In</a></li>
 						<%}else{ %>	
 						<li class="has-children">
 							<a href="#"><%out.println(id); %></a>
@@ -165,8 +165,8 @@ if(id==null){%>
 
 					<nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
 						<ol class="breadcrumb text-center justify-content-center">
-							<li class="breadcrumb-item "><a href="index.html">Club Search</a></li> <!-수정필요!-->
-							<li class="breadcrumb-item "><a href="index.html"><%out.println(cname); %></a></li> <!-수정필요!-->
+							<li class="breadcrumb-item "><a href="Home.jsp">Club Search</a></li> <!-수정필요!-->
+							<li class="breadcrumb-item "><a href="#"><%out.println(cname); %></a></li> <!-수정필요!-->
 							<li class="breadcrumb-item active text-white-50" aria-current="page">Apply</li><!-수정필요!-->
 						</ol>
 					</nav>

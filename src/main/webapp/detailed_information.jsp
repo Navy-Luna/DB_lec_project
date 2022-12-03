@@ -4,7 +4,7 @@
 <%
 //로그인 관련
 request.setCharacterEncoding("utf-8"); 
-session.setAttribute("id", "knu2020000029");
+session.setAttribute("id", "knu2020000020");
 /* session.removeAttribute("id"); */
 String id = (String)session.getAttribute("id");
 String clubID = "15";
@@ -148,13 +148,13 @@ int anum = rs.getInt(1);
 		<div class="container">
 			<div class="menu-bg-wrap">
 				<div class="site-navigation">
-					<a href="index.html" class="logo m-0 float-start">KNUClubs</a>
+					<a href="Home.jsp" class="logo m-0 float-start">KNUClubs</a>
 
 					<ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
-						<li><a href="index.html">Club Search</a></li>						
+						<li><a href="Home.jsp">Club Search</a></li>						
 						<!-- <li><a href="club_serach.jsp">Club Search</a></li> -->
 						<%if(id==null){%>
-							<li><a href="#">Sign In</a></li>
+							<li><a href="login_page.jsp">Sign In</a></li>
 						<%}else{ %>	
 						<li class="has-children">
 							<a href="#"><%out.println(id); %></a>
@@ -184,7 +184,7 @@ int anum = rs.getInt(1);
 
 					<nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
 						<ol class="breadcrumb text-center justify-content-center">
-							<li class="breadcrumb-item "><a href="index.html">Club Search</a></li> <!-수정필요!-->
+							<li class="breadcrumb-item "><a href="Home.jsp">Club Search</a></li> <!-수정필요!-->
 							<li class="breadcrumb-item active text-white-50" aria-current="page"><%out.println(cname); %></li><!-수정필요!-->
 						</ol>
 					</nav>

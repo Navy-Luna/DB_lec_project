@@ -3,7 +3,7 @@
 <%@ page language="java" import="java.text.*,java.sql.*" %>
 <%
 //로그인 관련
-request.setCharacterEncoding("utf-8"); 
+request.setCharacterEncoding("utf-8");
 String id = (String)session.getAttribute("id");
 String rnum = request.getParameter("rnum");
 
@@ -128,13 +128,13 @@ location.href = detailed_information.jsp;
 		<div class="container">
 			<div class="menu-bg-wrap">
 				<div class="site-navigation">
-					<a href="index.html" class="logo m-0 float-start">KNUClubs</a>
+					<a href="Home.jsp" class="logo m-0 float-start">KNUClubs</a>
 
 					<ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
-						<li><a href="index.html">Club Search</a></li>						
+						<li><a href="Home.jsp">Club Search</a></li>						
 						<!-- <li><a href="club_serach.jsp">Club Search</a></li> -->
 						<%if(id==null){%>
-							<li><a href="#">Sign In</a></li>
+							<li><a href="login_page.jsp">Sign In</a></li>
 						<%}else{ %>	
 						<li class="has-children">
 							<a href="#"><%out.println(id); %></a>
@@ -164,9 +164,9 @@ location.href = detailed_information.jsp;
 
 					<nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
 						<ol class="breadcrumb text-center justify-content-center">
-							<li class="breadcrumb-item "><a href="index.html"><%out.println(sname); %></a></li>
-							<li class="breadcrumb-item "><a href="index.html"><%out.println(date); %></a></li> 
-							<li class="breadcrumb-item "><a href="index.html"><%out.println(rating); %>점</a></li>
+							<li class="breadcrumb-item "><a href="#"><%out.println(sname); %></a></li>
+							<li class="breadcrumb-item "><a href="#"><%out.println(date); %></a></li> 
+							<li class="breadcrumb-item "><a href="#"><%out.println(rating); %>점</a></li>
 						</ol>
 					</nav>
 				</div>

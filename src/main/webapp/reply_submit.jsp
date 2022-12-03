@@ -95,4 +95,4 @@ if(id==null){
   	conn.close();
   	response.sendRedirect("./review_content.jsp?rnum="+rnum);
   	}
-  %>
+%>
