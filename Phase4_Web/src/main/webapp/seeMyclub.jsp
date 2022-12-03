@@ -3,13 +3,12 @@
 <%@ page language="java" import="java.text.*,java.sql.*" %>
 <%
 //로그인 관련
-session.setAttribute("id", "knu2020000029");
-session.removeAttribute("id");
+session.setAttribute("id", "knu2018000013");
+// session.removeAttribute("id");
 String id = (String)session.getAttribute("id");
-String clubID = "15";
 
 String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
-String USER_UNIVERSITY = "club";
+String USER_UNIVERSITY = "KNU_CLUB";
 String USER_PASSWD = "comp322";
 Connection conn = null;
 Statement stmt = null;
@@ -39,66 +38,37 @@ ResultSet rs;
 String sql;
 PreparedStatement ps;
 
-sql = "select snumber from student where sidentifier='"+id+"'";
-rs=stmt.executeQuery(sql);
-while(rs.next()){
-	String snum = rs.getString(1);
+
+// 아이디로 학번 받아오기
+sql = "select snumber from student where sidentifier = \'" + id + "\'";
+rs = stmt.executeQuery(sql);
+
+rs.next();
+String snum = rs.getString(1);
+
+
+// 가입한 동아리 이름, clubID 받아오기
+String[] club_name = new String[10];
+int[] club_num = new int[10];
+int rowcount = 0; // 동아리 개수 
+
+sql = "SELECT CNAME, CNUMBER FROM (STUDENT JOIN MEMBER ON SNUMBER = SNO) JOIN CLUB ON CNUMBER = CNO WHERE SNUMBER = \'" + snum + "\'";
+rs = stmt.executeQuery(sql);
+
+while(rs.next())
+{
+	String clubName = rs.getString(1);
+	int clubNum = rs.getInt(2); 
+	
+	club_name[rowcount] = clubName; // 동아리 이름 저장
+	club_num[rowcount] = clubNum; // club ID 저장
+	
+	rowcount += 1;
 }
 
 
-sql = "select * from club where cnumber=" + clubID;
-rs = stmt.executeQuery(sql);
-rs.next();
-Date cdate = rs.getDate(2);
-String cname = rs.getString(3);
-String ccollege = rs.getString(4);
-String ctype = rs.getString(5);
-
-// 평점
-sql = "select avg(rrating), count(*) from review where cno=" + clubID;
-rs = stmt.executeQuery(sql);
-rs.next();
-Float rt = rs.getFloat(1);
-String rating = String.format("%.1f", rt);
-if (rs.getInt(2) == 0)
-    rating = "평가없음";
-
-// 부장 이름
-sql = "select s.sname from student s, member m where m.cno = " + clubID
-        + " and m.sno = s.snumber and m.mposition = '부장'";
-rs = stmt.executeQuery(sql);
-rs.next();
-String boss = rs.getString(1);
-
-// 성비
-sql = "select ssex, count(*) from student, member where cno = " + clubID
-        + " and snumber = sno group by ssex";
-
-rs = stmt.executeQuery(sql);
-float mnum = 0;
-float fnum = 0;
-float mrate = 0;
-float frate = 0;
-while (rs.next()) {
-    String sex = rs.getString(1);
-    if (sex.compareTo("M") == 0)
-        mnum = rs.getInt(2);
-    else
-        fnum = rs.getInt(2);
-}
-if (mnum + fnum != 0) {
-    mrate = mnum / (mnum + fnum) * 100;
-    frate = fnum / (mnum + fnum) * 100;
-}
-
-// 누적 지원자 수
-sql = "select count(*) from student where exists(select * from apply where snumber = sno and cno = ?)";
-ps = conn.prepareStatement(sql);
-ps.setInt(1, Integer.parseInt(clubID));
-rs = ps.executeQuery();
-rs.next();
-int anum = rs.getInt(1);
 %>
+
 <!doctype html>
 <html lang="ko">
 <head>
@@ -122,7 +92,7 @@ int anum = rs.getInt(1);
 	<link rel="stylesheet" href="css/aos.css">
 	<link rel="stylesheet" href="css/style.css">
 
-	<title>KNUClubs &mdash; <%out.println(cname);%></title>
+	<title>KNUClubs &mdash; 내 동아리 보기</title>
 	
 	<style>
 	.col-lg-6 .text-black-50{
@@ -178,7 +148,7 @@ int anum = rs.getInt(1);
 		<div class="container">
 			<div class="row justify-content-center align-items-center">
 				<div class="col-lg-9 text-center mt-5">
-					<h1 class="heading" data-aos="fade-up"><%out.println(cname);%></h1>
+					<h1 class="heading" data-aos="fade-up">내 동아리 보기</h1>
 
 					<nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
 						<ol class="breadcrumb text-center justify-content-center">
@@ -196,29 +166,21 @@ int anum = rs.getInt(1);
 		<div class="container">
 			<div class="row text-left mb-5">
 				<div class="col-12">
-					<h2 class="font-weight-bold heading text-primary mb-4"><%out.println(cname+"동아리"); %></h2>
+					<h2 class="font-weight-bold heading text-primary mb-4">내 동아리 목록:</h2>
 				</div>
-				<div class="col-lg-6">
-					<p class="text-black-50"><%out.println("구분: "+ccollege + " 동아리" + "(" + ctype + ")"); %></p>
-					<p class="text-black-50"><%out.println("개설 날짜: " + cdate); %></p>
-					<p class="text-black-50"><%out.println("평점: " + rating); %></p>
-					<p class="text-black-50"><%out.println("부장: " + boss); %></p>
-					<p class="text-black-50"><%out.println(
-                            "남녀 성비:" + "    (남)" + String.format("%.1f", mrate) + "   (여)"
-                                    + String.format("%.1f", frate)); %></p>
-					<p class="text-black-50"><%out.println("누적 지원자 수: " + anum); %></p>
+				<div style="color:black; font-weight:400; font-size:2.0em">
+					<%
+						if(rowcount == 0)
+							out.println("가입한 동아리가 없습니다.");
+						else
+						{
+							for(int i=0; i<rowcount; i++)
+								out.println("<p>▷ <a style=\"color:black\" href=\"detailed_information_mem.jsp?clubID="+ club_num[i] + "\">" + club_name[i] + "</a></p>");
+						}
+					%>
 				</div>
-				<div class="col-lg-6">
-					<img src="images/knu_logo.jpg" alt="Image" class="img-fluid">
-				</div>
-				<%if(id==null){%>
-					<p class="text-black-50"><a  class="btn btn-primary" href="#">지원하기</a></p>
-				<%}else{ %>
-					<p class="text-black-50"><a  class="btn btn-primary" href="apply.jsp">지원하기</a></p>
-				<%} %>
 				
 			</div>
-
 		</div>
 	</div>
 
@@ -226,51 +188,34 @@ int anum = rs.getInt(1);
 
 	<div class="section sec-testimonials bg-light">
 		<div class="container">
-			<div class="row mb-5 align-items-center">
-				<div class="col-md-6">
-					<h2 class="font-weight-bold heading text-primary mb-4 mb-md-0">Reviews</h2>
+			<div class="row text-left mb-5">
+				<div class="col-12">
+					<h2 class="font-weight-bold heading text-primary mb-4">지원한 동아리:</h2>
 				</div>
-				<div class="col-md-6 text-md-end">
-					<div id="testimonial-nav">
-						<span class="prev" data-controls="prev">Prev</span>
+				<div style="color:black; font-weight:400; font-size:1.5em">
+					<%
+						int rowcount2 = 0;
+					
+						String query2 = "select c.cname, a.apass from apply a, student s, club c where a.sno = s.snumber and c.cnumber = a.cno and snumber = \'" + snum + "\'";
+						rs = stmt.executeQuery(query2);
 
-						<span class="next" data-controls="next">Next</span>
-					</div>
+						while(rs.next())
+						{
+							String clubNames = rs.getString(1);
+							String pass = rs.getString(2);
+							if(pass == null)
+								pass = "검토 중";
+						
+							out.println("<p> > 동아리 이름: " + clubNames + " || 합/불 여부: " + pass + "</p>");
+							rowcount2 += 1;
+						}
+						
+						// ResultSet의 행의 개수
+						if (rowcount2 == 0)
+							out.println("<p>지원한 동아리가 없습니다.</p>");	
+					%>
 				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-4"></div>
-			</div>
-			<div class="testimonial-slider-wrap">
-				<div class="testimonial-slider">
-				<%
-				int rnumber;
-				String rtitle;
-				String sname;
-				String sdepartment;
-				try {
-	                // 리뷰 목록
-	                sql = "select rnumber, rtitle, sname, sdepartment from review, student where sno=snumber and cno = " + clubID+"order by rdate desc";
-	                rs = stmt.executeQuery(sql);
-	                while (rs.next()) {
-	                   rnumber=rs.getInt(1);
-	                   rtitle=rs.getString(2);
-	                   sname=rs.getString(3);
-	                   sdepartment = rs.getString(4);
-	                   out.println("<div class=\"item\"><div class=\"testimonial\"><img src=\"images/knu_ch.jpeg\" alt=\"Image\" class=\"img-fluid rounded-circle w-25 mb-4\">");
-	                   out.println("<h3 class=\"h5 text-primary\">"+ sname +"</h3>");
-	                   out.println("<p class=\"text-black-50\">"+ sdepartment +"</p>");
-	                   out.println("<p>"+rtitle+"</p>");
-	                   out.println("<a href=\"review_content.jsp?rno="+rnumber+"\"><img src=\"images/comment.png\" alt=\"cmt\"></a>");
-	                   out.println("</div></div>");
-	                }
-				}catch (SQLException ex2) {
-	                    System.out.println("sql error = " + ex2.getMessage());
-	             
-	                }
-				%>
-				</div>
+				
 			</div>
 		</div>
 	</div>
