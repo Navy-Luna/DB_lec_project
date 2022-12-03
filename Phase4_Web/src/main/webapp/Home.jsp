@@ -5,8 +5,9 @@
 <%
 
 String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
-String USER_UNIVERSITY = "club";
+String USER_UNIVERSITY = "KNU_CLUB";
 String USER_PASSWD = "comp322";
+
 Connection conn = null;
 Statement stmt = null;
 String sql="";
@@ -241,7 +242,7 @@ function post_search2(){
 								System.out.println("search="+search);
 								sb= new StringBuffer();
 								
-								if(search.equals("null") || search==null){
+								if(search==null || search.equals("null")){
 									System.out.println("searh가 null");
 										sb.append("select distinct c1.cname,c1.ccollege,c1.ctype,u.rating,c1.cnumber\r\n"
 												+ "from club c1,\r\n"
