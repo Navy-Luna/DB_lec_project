@@ -4,10 +4,11 @@
 <%
 //로그인 관련
 request.setCharacterEncoding("utf-8"); 
-session.setAttribute("id", "knu2020000020");
+session.setAttribute("id", "knu2020000010");
 /* session.removeAttribute("id"); */
 String id = (String)session.getAttribute("id");
-String clubID = "15";
+String clubID = request.getParameter("clubid");;
+clubID = "26";  	// 테스팅용 
 
 String URL = "jdbc:oracle:thin:@112.157.15.34:1521:xe";
 String USER_UNIVERSITY = "dbproject";
@@ -41,6 +42,11 @@ String sql;
 PreparedStatement ps;
 String snum;
 if(id!=null){
+	sql = "select s.* from student s, member where sno = snumber and cno = "+clubID+" and sidentifier ='"+id+"'";
+	rs=stmt.executeQuery(sql);
+	if(rs.next()){
+		response.sendRedirect("./detailed_information_mem.jsp?clubid="+clubID);
+	}
 	sql = "select snumber from student where sidentifier='"+id+"'";
 	rs=stmt.executeQuery(sql);
 	while(rs.next()){
