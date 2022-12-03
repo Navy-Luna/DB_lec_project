@@ -243,7 +243,6 @@ function post_search2(){
 								
 								if(search.equals("null") || search==null){
 									System.out.println("searh가 null");
-									if(type.equals("null")){
 										sb.append("select distinct c1.cname,c1.ccollege,c1.ctype,u.rating,c1.cnumber\r\n"
 												+ "from club c1,\r\n"
 												+ "(select cname,round(AVG(r.rrating),1)rating\r\n"
@@ -251,7 +250,6 @@ function post_search2(){
 												+ "where c.cnumber=r.cno\r\n"
 												+ "group by c.cname) u\r\n"
 												+ "where c1.cname = u.cname and rownum<10");
-									}
 									
 								}
 								else{
