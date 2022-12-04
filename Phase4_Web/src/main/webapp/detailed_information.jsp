@@ -4,14 +4,15 @@
 <%
 //로그인 관련
 request.setCharacterEncoding("utf-8"); 
-session.setAttribute("id", "knu2020000020");
+//session.setAttribute("id", "knu2018000040");
 /* session.removeAttribute("id"); */
 String id = (String)session.getAttribute("id");
-String clubID = "15";
+String clubID = request.getParameter("clubid");
+//clubID = "3";  	// 테스팅용 
 
-String URL = "jdbc:oracle:thin:@112.157.15.34:1521:xe";
-String USER_UNIVERSITY = "dbproject";
-String USER_PASSWD = "comp322";
+String URL = (String)session.getAttribute("URL");
+String USER_UNIVERSITY = (String)session.getAttribute("USER_UNIVERSITY");
+String USER_PASSWD = (String)session.getAttribute("USER_PASSWD");
 Connection conn = null;
 Statement stmt = null;
 
@@ -41,6 +42,11 @@ String sql;
 PreparedStatement ps;
 String snum;
 if(id!=null){
+	sql = "select s.* from student s, member where sno = snumber and cno = "+clubID+" and sidentifier ='"+id+"'";
+	rs=stmt.executeQuery(sql);
+	if(rs.next()){
+		response.sendRedirect("./detailed_information_mem.jsp?clubid="+clubID);
+	}
 	sql = "select snumber from student where sidentifier='"+id+"'";
 	rs=stmt.executeQuery(sql);
 	while(rs.next()){
@@ -159,9 +165,8 @@ int anum = rs.getInt(1);
 						<li class="has-children">
 							<a href="#"><%out.println(id); %></a>
 							<ul class="dropdown">
-								<li><a href="#">Sign Out</a></li>
+								<li><a href="Home.jsp?session=-1">Sign Out</a></li>
 								<li><a href="seeMyclub.jsp">My Clubs</a></li>
-								<li><a href="#">Settings</a></li>
 							</ul>
 						<%} %>
 					</ul>
@@ -259,7 +264,7 @@ int anum = rs.getInt(1);
 	                   out.println("<h3 class=\"h5 text-primary\">"+ sname +"</h3>");
 	                   out.println("<p class=\"text-black-50\">"+ sdepartment +"</p>");
 	                   out.println("<p>"+rtitle+"</p>");
-	                   out.println("<a href=\"review_content.jsp?rnum="+rnumber+"\"><img src=\"images/comment.png\" alt=\"cmt\"></a>");
+	                   out.println("<a href=\"review_content.jsp?rno="+rnumber+"\"><img src=\"images/comment.png\" alt=\"cmt\"></a>");
 	                   out.println("</div></div>");
 	                }
 				}catch (SQLException ex2) {

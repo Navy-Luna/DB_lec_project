@@ -7,11 +7,11 @@ request.setCharacterEncoding("utf-8");
 String id = (String)session.getAttribute("id");
 String tnum = request.getParameter("tnum");
 String dcontent=request.getParameter("dcontent");
-String rnum = request.getParameter("rnum");
+String rnum = request.getParameter("rno");
 
-String URL = "jdbc:oracle:thin:@112.157.15.34:1521:xe";
-String USER_UNIVERSITY = "dbproject";
-String USER_PASSWD = "comp322";
+String URL = (String)session.getAttribute("URL");
+String USER_UNIVERSITY = (String)session.getAttribute("USER_UNIVERSITY");
+String USER_PASSWD = (String)session.getAttribute("USER_PASSWD");
 Connection conn = null;
 Statement stmt = null;
 
@@ -93,6 +93,6 @@ if(id==null){
 <%
  	stmt.close();
   	conn.close();
-  	response.sendRedirect("./review_content.jsp?rnum="+rnum);
+  	response.sendRedirect("./review_content.jsp?rno="+rnum);
   	}
 %>

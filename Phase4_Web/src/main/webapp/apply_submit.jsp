@@ -3,14 +3,14 @@
 <%@ page language="java" import="java.text.*,java.sql.*" %>
 <%
 //parameter 받기
-
+request.setCharacterEncoding("utf-8");
 String id = (String)session.getAttribute("id");
 String clubID = request.getParameter("clubid");
 String acontent=request.getParameter("acontent");
 
-String URL = "jdbc:oracle:thin:@112.157.15.34:1521:xe";
-String USER_UNIVERSITY = "dbproject";
-String USER_PASSWD = "comp322";
+String URL = (String)session.getAttribute("URL");
+String USER_UNIVERSITY = (String)session.getAttribute("USER_UNIVERSITY");
+String USER_PASSWD = (String)session.getAttribute("USER_PASSWD");
 Connection conn = null;
 Statement stmt = null;
 

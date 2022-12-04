@@ -9,9 +9,9 @@ String id = (String)session.getAttribute("id");
 String snumber = request.getParameter("snum"); // 학생의 학번
 String clubID = request.getParameter("clubID"); // 동아리 ID
 	
-String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
-String USER_UNIVERSITY = "KNU_CLUB";
-String USER_PASSWD = "comp322";
+String URL = (String)session.getAttribute("URL");
+String USER_UNIVERSITY = (String)session.getAttribute("USER_UNIVERSITY");
+String USER_PASSWD = (String)session.getAttribute("USER_PASSWD");
 Connection conn = null;
 Statement stmt = null;
 

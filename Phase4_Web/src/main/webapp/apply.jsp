@@ -7,9 +7,9 @@ request.setCharacterEncoding("utf-8");
 String id = (String)session.getAttribute("id");
 String clubID = request.getParameter("clubID");
 
-String URL = "jdbc:oracle:thin:@112.157.15.34:1521:xe";
-String USER_UNIVERSITY = "dbproject";
-String USER_PASSWD = "comp322";
+String URL = (String)session.getAttribute("URL");
+String USER_UNIVERSITY = (String)session.getAttribute("USER_UNIVERSITY");
+String USER_PASSWD = (String)session.getAttribute("USER_PASSWD");
 Connection conn = null;
 Statement stmt = null;
 
@@ -127,7 +127,7 @@ if(id==null){%>
 
 	<nav class="site-nav">
 		<div class="container">
-			<div class="menu-bg-wrap">
+			<<div class="menu-bg-wrap">
 				<div class="site-navigation">
 					<a href="Home.jsp" class="logo m-0 float-start">KNUClubs</a>
 
@@ -140,9 +140,8 @@ if(id==null){%>
 						<li class="has-children">
 							<a href="#"><%out.println(id); %></a>
 							<ul class="dropdown">
-								<li><a href="#">Sign Out</a></li>
+								<li><a href="Home.jsp?session=-1">Sign Out</a></li>
 								<li><a href="seeMyclub.jsp">My Clubs</a></li>
-								<li><a href="#">Settings</a></li>
 							</ul>
 						<%} %>
 					</ul>

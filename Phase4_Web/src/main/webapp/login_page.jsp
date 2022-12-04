@@ -49,9 +49,8 @@
 								id="user_name" name="user_name" type="text" class="input">
 						</div>
 						<div class="group">
-							<label for="user" class="label" style="color: black">ID</label> <input
+							<label for="user" class="label" style="color: black">ID(knu+학번-총13자)</label> <input
 								id="user_id" name="user_id" type="text" class="input">
-
 						</div>
 						<div class="group">
 							<label for="pass" class="label" style="color: black">Password</label>
@@ -71,9 +70,9 @@
 						<div class="group">
 							<label for="pass" class="label" style="color: black">단대</label> <select
 								name="college" class="select" onchange="categoryChange(this)">
-								<option value="IT">IT대학
-								<option value="engineering">공과대학
-								<option value="EBA">경상대학
+								<option value="IT대학">IT대학
+								<option value="공과대학">공과대학
+								<option value="경상대학">경상대학
 							</select>
 						</div>
 						<div class="group">
@@ -90,11 +89,11 @@
 									var target = document
 											.getElementById("department");
 
-									if (e.value == "IT")
+									if (e.value == "IT대학")
 										var d = good_a;
-									else if (e.value == "engineering")
+									else if (e.value == "공과대학")
 										var d = good_b;
-									else if (e.value == "EBA")
+									else if (e.value == "경상대학")
 										var d = good_c;
 
 									target.options.length = 0;

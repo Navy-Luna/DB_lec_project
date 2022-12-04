@@ -10,9 +10,9 @@
 </head>
 <body>
 	<%
-	String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
-	String USER_UNIVERSITY = "club";
-	String USER_PASSWD = "comp322";
+	String URL = (String)session.getAttribute("URL");
+	String USER_UNIVERSITY = (String)session.getAttribute("USER_UNIVERSITY");
+	String USER_PASSWD = (String)session.getAttribute("USER_PASSWD");
 	Connection conn = null;
 	Statement stmt = null;
 	String sql = "";
@@ -37,22 +37,59 @@
 		System.err.println("Cannot get a connection: " + ex.getMessage());
 		System.exit(1);
 	}
+	// Statement object
+			try {
+				stmt = conn.createStatement();
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
 	request.setCharacterEncoding("euc-kr");
 	String name = request.getParameter("user_name");
-	String ID= request.getParameter("user_id");
-	String PW = request.getParameter("user_pass");
-	String PW_repeat= request.getParameter("user_pass_repeat");
+	String ID= (String)request.getParameter("user_id");
+	System.out.println(ID);
+	StringBuffer sb = new StringBuffer();
+	sb.append("SELECT COUNT(*)\r\n"
+			+ "from student s\r\n"
+			+ "where s.sidentifier='"+ID+"'");
+	sql =sb.toString();
+	rs = stmt.executeQuery(sql);
+	System.out.println(sql);
+	rs.next();
+	if(rs.getInt(1)!=0){
+		out.println("<script>alert('중복되는 아이디가 있습니다!'); window.history.back();</script>");
+		return;
+	}
+	else {
+		System.out.println("중복되는 아이디가 있습니다. 다시 입력해주세요.");
+	}
+	String PW = (String)request.getParameter("user_pass");
+	String PW_repeat= (String)request.getParameter("user_pass_repeat");
 	if(!(PW.equals(PW_repeat))){
 		System.out.println("비밀번호가 일치하지 않습니다.");
-		response.sendRedirect("login_page.jsp?error=login-failed");
+		out.println("<script>alert('비밀번호가 일치하지 않습니다!'); window.history.back();</script>");
+		return;
 	}
 	String snumber = request.getParameter("user_number");
 	String college =  request.getParameter("college");
 	String department = request.getParameter("department");
 	String email = request.getParameter("user_email");
 	String phone = request.getParameter("user_phone");
+	 sb = new StringBuffer();
+		sb.append("SELECT COUNT(*)\r\n"
+				+ "from student s\r\n"
+				+ "where s.sphone='"+phone+"'");
+		sql =sb.toString();
+		rs = stmt.executeQuery(sql);
+		System.out.println(sql);
+		rs.next();
+		if(rs.getInt(1)!=0){
+			out.println("<script>alert('중복되는 휴대폰 번호가 있습니다!'); window.history.back();</script>");
+			return;
+		}
+		else {
+		}
 	String sex = request.getParameter("user_sex");
-	StringBuffer sb = new StringBuffer();
+	sb = new StringBuffer();
 	sb.append("INSERT INTO STUDENT VALUES(");
 	sb.append("'"+snumber+"',");
 	sb.append("'"+college+"',");
@@ -73,7 +110,8 @@
 	
 	%>
 	<%
-	response.sendRedirect("Home.jsp?snumber=" + snumber);
+	session.setAttribute("id",ID);
+	response.sendRedirect("Home.jsp");
 	%>
 
 </body>

@@ -3,13 +3,12 @@
 <%@ page language="java" import="java.text.*,java.sql.*" %>
 <%
 //로그인 관련
-session.setAttribute("id", "knu2018000013");
 // session.removeAttribute("id");
 String id = (String)session.getAttribute("id");
 
-String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
-String USER_UNIVERSITY = "KNU_CLUB";
-String USER_PASSWD = "comp322";
+String URL = (String)session.getAttribute("URL");
+String USER_UNIVERSITY = (String)session.getAttribute("USER_UNIVERSITY");
+String USER_PASSWD = (String)session.getAttribute("USER_PASSWD");;
 Connection conn = null;
 Statement stmt = null;
 
@@ -116,20 +115,19 @@ while(rs.next())
 		<div class="container">
 			<div class="menu-bg-wrap">
 				<div class="site-navigation">
-					<a href="index.html" class="logo m-0 float-start">KNUClubs</a>
+					<a href="Home.jsp" class="logo m-0 float-start">KNUClubs</a>
 
 					<ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
-						<li><a href="index.html">Home</a></li>						
-						<li><a href="#">Club Search</a></li>
+						<li><a href="Home.jsp">Club Search</a></li>						
+						<!-- <li><a href="club_serach.jsp">Club Search</a></li> -->
 						<%if(id==null){%>
-							<li><a href="#">Sign In</a></li>
+							<li><a href="login_page.jsp">Sign In</a></li>
 						<%}else{ %>	
 						<li class="has-children">
 							<a href="#"><%out.println(id); %></a>
 							<ul class="dropdown">
-								<li><a href="#">Sign Out</a></li>
-								<li><a href="#">My Clubs</a></li>
-								<li><a href="#">Settings</a></li>
+								<li><a href="Home.jsp?session=-1">Sign Out</a></li>
+								<li><a href="seeMyclub.jsp">My Clubs</a></li>
 							</ul>
 						<%} %>
 					</ul>
@@ -152,7 +150,7 @@ while(rs.next())
 
 					<nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
 						<ol class="breadcrumb text-center justify-content-center">
-							<li class="breadcrumb-item "><a href="index.html">Home</a></li> <!-수정필요!-->
+							<li class="breadcrumb-item "><a href="Home.html">Home</a></li> <!-수정필요!-->
 							<li class="breadcrumb-item active text-white-50" aria-current="page">Club Search</li><!-수정필요!-->
 						</ol>
 					</nav>
@@ -175,7 +173,7 @@ while(rs.next())
 						else
 						{
 							for(int i=0; i<rowcount; i++)
-								out.println("<p>▷ <a style=\"color:black\" href=\"detailed_information_mem.jsp?clubID="+ club_num[i] + "\">" + club_name[i] + "</a></p>");
+								out.println("<p>▷ <a style=\"color:black\" href=\"detailed_information_mem.jsp?clubid="+ club_num[i] + "\">" + club_name[i] + "</a></p>");
 						}
 					%>
 				</div>

@@ -12,9 +12,9 @@ if (urlID != null) // 동아리 보기에서 바로 넘어온 경우
 	clubID = urlID; // clubID 갱신
 
 	
-String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
-String USER_UNIVERSITY = "KNU_CLUB";
-String USER_PASSWD = "comp322";
+	String URL = (String)session.getAttribute("URL");
+	String USER_UNIVERSITY = (String)session.getAttribute("USER_UNIVERSITY");
+	String USER_PASSWD = (String)session.getAttribute("USER_PASSWD");
 Connection conn = null;
 Statement stmt = null;
 
@@ -138,20 +138,19 @@ if(applyCount > 0) // 한명이라도 지원자 있는경우
 		<div class="container">
 			<div class="menu-bg-wrap">
 				<div class="site-navigation">
-					<a href="index.html" class="logo m-0 float-start">KNUClubs</a>
+					<a href="Home.jsp" class="logo m-0 float-start">KNUClubs</a>
 
 					<ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
-						<li><a href="index.html">Home</a></li>						
-						<li><%out.println("<a href=\"manageMyclub.jsp?clubID=" + clubID + "\" >Manage Home</a>"); %></li>
+						<li><a href="Home.jsp">Club Search</a></li>						
+						<!-- <li><a href="club_serach.jsp">Club Search</a></li> -->
 						<%if(id==null){%>
-							<li><a href="#">Sign In</a></li>
+							<li><a href="login_page.jsp">Sign In</a></li>
 						<%}else{ %>	
 						<li class="has-children">
 							<a href="#"><%out.println(id); %></a>
 							<ul class="dropdown">
-								<li><a href="#">Sign Out</a></li>
-								<li><a href="#">My Clubs</a></li>
-								<li><a href="#">Settings</a></li>
+								<li><a href="Home.jsp?session=-1">Sign Out</a></li>
+								<li><a href="seeMyclub.jsp">My Clubs</a></li>
 							</ul>
 						<%} %>
 					</ul>

@@ -3,23 +3,37 @@
 <%@ page language="java"
 	import="java.text.*,java.sql.*,java.util.Scanner"%>
 <%
+String URL = (String)session.getAttribute("URL");
+String USER_UNIVERSITY = (String)session.getAttribute("USER_UNIVERSITY");
+String USER_PASSWD = (String)session.getAttribute("USER_PASSWD");
+String session1 = (String)request.getParameter("session");
+String id = (String)session.getAttribute("id");
+System.out.println("sesion="+session1);
+if(session1!=null){
+	if(session1.equals("-1")){
+		session.removeAttribute("id");
+		response.sendRedirect("Home.jsp");
+		return;
+	}
+}
 
-String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
-String USER_UNIVERSITY = "KNU_CLUB";
-String USER_PASSWD = "comp322";
-
+if(URL==null){
+    response.sendRedirect("./dbconnect.jsp");
+    return;
+}
 Connection conn = null;
 Statement stmt = null;
 String sql="";
 ResultSet rs = null;
-String id =null;
 String snumber=null;
 String search=null;
+String type1=null;
 StringBuffer sb = new StringBuffer();
 Scanner sc= new Scanner(System.in);
 request.setCharacterEncoding("utf-8");
 snumber = request.getParameter("snumber");
 search = request.getParameter("search");
+type1 = request.getParameter("type");
 try {
     // Load a JDBC Driver for oracle DBMS
     Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -94,26 +108,25 @@ sql = "select * from student";
 		<div class="container">
 			<div class="menu-bg-wrap">
 				<div class="site-navigation">
-					<a href="index.html" class="logo m-0 float-start">KNUClubs</a>
+					<a href="Home.jsp" class="logo m-0 float-start">KNUClubs</a>
 
-					<ul
-						class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
-						<li><a href="index.html">Home</a></li>
-						<li><a href="#">Club Search</a></li>
-						<%if(snumber==null){%>
-						<li><a href="/Phase4_Web/login_page.jsp">Sign In</a></li>
-						<%}else{ %>
-						<li class="has-children"><a href="#">MY</a>
+					<ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu float-end">
+						<li><a href="Home.jsp">Club Search</a></li>						
+						<!-- <li><a href="club_serach.jsp">Club Search</a></li> -->
+						<%if(id==null){%>
+							<li><a href="login_page.jsp">Sign In</a></li>
+						<%}else{ %>	
+						<li class="has-children">
+							<a href="#"><%out.println(id); %></a>
 							<ul class="dropdown">
-								<li><a href="/Phase4_Web/Home.jsp">Sign Out</a></li>
-								<li><a href="/Phase4_Web/seeMyclub.jsp">My Clubs</a></li>
-								<li><a href="#">Settings</a></li>
-							</ul> <%} %>
+								<li><a href="Home.jsp?session=-1">Sign Out</a></li>
+								<li><a href="seeMyclub.jsp">My Clubs</a></li>
+							</ul>
+						<%} %>
 					</ul>
 
-					<a href="#"
-						class="burger light me-auto float-end mt-1 site-menu-toggle js-menu-toggle d-inline-block d-lg-none"
-						data-toggle="collapse" data-target="#main-navbar"> <span></span>
+					<a href="#" class="burger light me-auto float-end mt-1 site-menu-toggle js-menu-toggle d-inline-block d-lg-none" data-toggle="collapse" data-target="#main-navbar">
+						<span></span>
 					</a>
 
 				</div>
@@ -126,7 +139,7 @@ sql = "select * from student";
 
 		<div class="hero-slide">
 			<div class="img overlay"
-				style="background-image: url('images/hobanu2.png')"></div>
+				style="background-image: url('images/gp.jpg')"></div>
 
 		</div>
 
@@ -167,23 +180,16 @@ sql = "select * from student";
 			console.log(snumber);
 			console.log(club_name);
 			//alert("hello");
-			form1.action='Home.jsp?snumber='+snumber+'&search='+club_name;
+			form1.action='Home.jsp?search='+club_name;
 			form1.submit();
 		}
-function post_search2(){
-			
-			console.log('js console');
-			var snumber = <%out.println(snumber);%>;
-			
-			var club_name=<%out.println(search);%>;
+		function post_search2(){
+			var club_name="<%=search%>";
 			var type=form2.type.value;
-			if(club_name==null)alert(club_name);
-			console.log('js console');
-			console.log(snumber);
-			console.log(club_name);
+			//if(club_name==null)alert(club_name);
 			//alert("hello");
-			form1.action='Home.jsp?snumber='+snumber+'&search='+club_name+'&type='+type;
-			form1.submit();
+			form2.action='Home.jsp?search='+club_name+'&type='+type;
+			form2.submit();
 		}
 	</script>
 
@@ -193,13 +199,12 @@ function post_search2(){
 				<div class="col-lg-6">
 					<h2 class="font-weight-bold text-primary heading">동아리 리스트</h2>
 					<div>
-					<form name=form2>
-					<input type="radio" name="type" value="center" onclick="post_search2()">중앙
-							<input type="radio" value="single"name="type" >단대
-							<input type="radio" value="depart" name="type" >학과
+					<form name=form2 method="post">
+					<input type="radio" name="type" value="center" onclick="post_search2()" >학술
+					<input type="radio" name="type" value="single" onclick="post_search2()">예체능
+					<input type="radio" name="type" value="depart" onclick="post_search2()">자원봉사
 					</form>
 					</div>
-					
 				</div>
 			</div>
 			<div class="section section-properties" id="club_list_section_p">
@@ -241,9 +246,20 @@ function post_search2(){
 								int i=0;
 								System.out.println("search="+search);
 								sb= new StringBuffer();
-								
-								if(search==null || search.equals("null")){
-									System.out.println("searh가 null");
+								System.out.println("b_type1="+type1);
+								if(type1!=null){
+									if(type1.equals("center"))
+										type1="학술";
+									else if(type1.equals("single"))
+										type1="예체능";
+									else if(type1.equals("depart"))
+										type1="자원봉사";
+									else {type1=null;}
+								}
+								System.out.println("a_type1="+type1);
+								if(search==null || search.equals("null")|| search.equals("")){
+									if(type1==null|| type1.equals("null")|| type1.equals("")){
+										System.out.println("searh가 null");
 										sb.append("select distinct c1.cname,c1.ccollege,c1.ctype,u.rating,c1.cnumber\r\n"
 												+ "from club c1,\r\n"
 												+ "(select cname,round(AVG(r.rrating),1)rating\r\n"
@@ -251,18 +267,49 @@ function post_search2(){
 												+ "where c.cnumber=r.cno\r\n"
 												+ "group by c.cname) u\r\n"
 												+ "where c1.cname = u.cname and rownum<10");
+									}
+									else{
+										
+										sb.append("select distinct c1.cname,c1.ccollege,c1.ctype,u.rating,c1.cnumber\r\n"
+												+ "from club c1,\r\n"
+												+ "(select cname,round(AVG(r.rrating),1)rating\r\n"
+												+ "from club c, review r\r\n"
+												+ "where c.cnumber=r.cno\r\n"
+												+ "group by c.cname) u\r\n"
+												+ "where c1.cname = u.cname and rownum<10 and c1.ctype='");
+										sb.append(type1+"'");
+										System.out.println("sql="+sb.toString());
+									}
+									
 									
 								}
 								else{
-									System.out.println("검색들어옴");
-									sb.append("select distinct c1.cname,c1.ccollege,c1.ctype,u.rating,c1.cnumber\r\n"
-											+ "from club c1,\r\n"
-											+ "(select cname,round(AVG(r.rrating),1)rating\r\n"
-											+ "from club c, review r\r\n"
-											+ "where c.cnumber=r.cno\r\n"
-											+ "group by c.cname)u\r\n"
-											+ "where c1.cname = u.cname and rownum<=10 and c1.cname='");
-									sb.append(search+"'");
+									if(type1==null|| type1.equals("null")|| type1.equals("")){
+										System.out.println("검색들어옴");
+										sb.append("select distinct c1.cname,c1.ccollege,c1.ctype,u.rating,c1.cnumber\r\n"
+												+ "from club c1,\r\n"
+												+ "(select cname,round(AVG(r.rrating),1)rating\r\n"
+												+ "from club c, review r\r\n"
+												+ "where c.cnumber=r.cno\r\n"
+												+ "group by c.cname)u\r\n"
+												+ "where c1.cname = u.cname and rownum<=10 and c1.cname LIKE '%");
+										sb.append(search+"%'");
+										System.out.println("sql="+sb.toString());
+									}
+									else{
+										System.out.println("검색들어옴");
+										sb.append("select distinct c1.cname,c1.ccollege,c1.ctype,u.rating,c1.cnumber\r\n"
+												+ "from club c1,\r\n"
+												+ "(select cname,round(AVG(r.rrating),1)rating\r\n"
+												+ "from club c, review r\r\n"
+												+ "where c.cnumber=r.cno\r\n"
+												+ "group by c.cname)u\r\n"
+												+ "where c1.cname = u.cname and rownum<=10 and c1.cname LIKE '%");
+										sb.append(search+"%' and c1.ctype='");
+										sb.append(type1+"'");
+										System.out.println("sql="+sb.toString());
+									}
+									
 								}
 								//System.out.printf(search);
 								sql=sb.toString();
@@ -298,6 +345,7 @@ function post_search2(){
 								var name=[];
 								var type=[];
 								var rate=[];
+								var clubId=[];
 								//alert("변수 담기시작");
 								name[0]="<%=name[0]%>";
 								name[1]="<%=name[1]%>";
@@ -326,6 +374,15 @@ function post_search2(){
 								rate[6]="<%=rating[6]%>";
 								rate[7]="<%=rating[7]%>";
 								rate[8]="<%=rating[8]%>";
+								clubId[0]="<%=clubId[0]%>";
+								clubId[1]="<%=clubId[1]%>";
+								clubId[2]="<%=clubId[2]%>";
+								clubId[3]="<%=clubId[3]%>";
+								clubId[4]="<%=clubId[4]%>";
+								clubId[5]="<%=clubId[5]%>";
+								clubId[6]="<%=clubId[6]%>";
+								clubId[7]="<%=clubId[7]%>";
+								clubId[8]="<%=clubId[8]%>";
 								//alert("변수 담기완료");
 								for (i = 0; i <<%out.println(cnt);%>; i++) {
 
@@ -355,7 +412,7 @@ function post_search2(){
 									let new_img_imgTag = document
 											.createElement('img');
 									new_img_imgTag.setAttribute('src',
-											'images/img_1.jpg');
+											'images/knu_logo.jpg');
 									new_img_imgTag.setAttribute('alt', 'Image');
 									new_img_imgTag.setAttribute('class',
 											'img-fluid');
@@ -441,8 +498,9 @@ function post_search2(){
 									//detail a태그
 									let new_detail_aTag = document
 											.createElement('a');
+									var href="detailed_information.jsp?clubid="+clubId[i];
 									new_detail_aTag.setAttribute('href',
-											'property-single.html');
+											href);
 									new_detail_aTag.setAttribute('class',
 											'btn btn-primary py-2 px-3');
 									new_detail_aTag.innerHTML = "자세히 보기";
@@ -462,7 +520,9 @@ function post_search2(){
 							create_club_list();
 						</script>
 					</div>
-					<div class="row align-items-center py-5">
+					
+				</div>
+				<div class="row align-items-center py-5">
 						<div class="col-lg-3">Pagination (1 of 10)</div>
 						<div class="col-lg-6 text-center">
 							<div class="custom-pagination">
@@ -471,7 +531,6 @@ function post_search2(){
 							</div>
 						</div>
 					</div>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -482,7 +541,7 @@ function post_search2(){
 				<div class="col-lg-6 mb-5">
 					<h2 class="font-weight-bold heading text-primary mb-4">Our
 						Agents</h2>
-					<p class="text-black-50">학교에 동아리 정식 등록후에 저희 서비스에 등록하고 싶으시다면
+					<p class="text-black-50">학교에 동아리 정식 등록후에 저희 서비스에 등록하고 싶으시다거나 버그를 발견하면
 						주저말고 연락부탁드립니다!</p>
 				</div>
 			</div>
@@ -490,16 +549,14 @@ function post_search2(){
 				<div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0">
 					<div class="h-100 person">
 
-						<img src="images/person_1-min.jpg" alt="Image" class="img-fluid">
+						<img src="images/agent1.jpg" alt="Image" class="img-fluid">
 
 						<div class="person-contents">
 							<h2 class="mb-0">
-								<a href="#">James Doe</a>
+								<a href="#">김동근</a>
 							</h2>
 							<span class="meta d-block mb-3">Real Estate Agent</span>
-							<p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
-								Facere officiis inventore cumque tenetur laboriosam, minus culpa
-								doloremque odio, neque molestias?</p>
+							<p>안녕하세요. 김동근입니다.</p>
 
 							<ul class="social list-unstyled list-inline dark-hover">
 								<li class="list-inline-item"><a href="#"><span
@@ -517,16 +574,14 @@ function post_search2(){
 				<div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0">
 					<div class="h-100 person">
 
-						<img src="images/person_2-min.jpg" alt="Image" class="img-fluid">
+						<img src="images/agent2.jpg" alt="Image" class="img-fluid">
 
 						<div class="person-contents">
 							<h2 class="mb-0">
-								<a href="#">Jean Smith</a>
+								<a href="#">김도선</a>
 							</h2>
 							<span class="meta d-block mb-3">Real Estate Agent</span>
-							<p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
-								Facere officiis inventore cumque tenetur laboriosam, minus culpa
-								doloremque odio, neque molestias?</p>
+							<p>안녕하세요. 김도선입니다.</p>
 
 							<ul class="social list-unstyled list-inline dark-hover">
 								<li class="list-inline-item"><a href="#"><span
@@ -535,7 +590,7 @@ function post_search2(){
 										class="icon-facebook"></span></a></li>
 								<li class="list-inline-item"><a href="#"><span
 										class="icon-linkedin"></span></a></li>
-								<li class="list-inline-item"><a href="#"><span
+								<li class="list-inline-item"><a href="https://www.instagram.com/doooosun/"><span
 										class="icon-instagram"></span></a></li>
 							</ul>
 						</div>
@@ -544,16 +599,14 @@ function post_search2(){
 				<div class="col-sm-6 col-md-6 col-lg-4 mb-5 mb-lg-0">
 					<div class="h-100 person">
 
-						<img src="images/person_3-min.jpg" alt="Image" class="img-fluid">
+						<img src="images/agent3.jpg" alt="Image" class="img-fluid">
 
 						<div class="person-contents">
 							<h2 class="mb-0">
-								<a href="#">Alicia Huston</a>
+								<a href="#">윤주영</a>
 							</h2>
 							<span class="meta d-block mb-3">Real Estate Agent</span>
-							<p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
-								Facere officiis inventore cumque tenetur laboriosam, minus culpa
-								doloremque odio, neque molestias?</p>
+							<p>안녕하세요. 윤주영입니다.</p>
 
 							<ul class="social list-unstyled list-inline dark-hover">
 								<li class="list-inline-item"><a href="#"><span

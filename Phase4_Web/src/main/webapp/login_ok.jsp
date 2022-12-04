@@ -10,9 +10,9 @@
 </head>
 <body>
 	<%
-	String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
-	String USER_UNIVERSITY = "club";
-	String USER_PASSWD = "comp322";
+	String URL = (String)session.getAttribute("URL");
+	String USER_UNIVERSITY = (String)session.getAttribute("USER_UNIVERSITY");
+	String USER_PASSWD = (String)session.getAttribute("USER_PASSWD");
 	Connection conn = null;
 	Statement stmt = null;
 	String sql = "";
@@ -54,12 +54,14 @@
 		sb.append("select snumber\r\n" + "from student\r\n" + "where sidentifier='");
 		sb.append(id + "'");
 		sql = sb.toString();
-
+		
 		rs = stmt.executeQuery(sql);
 		rs.next();
 		String snumber = rs.getString(1);
+		session.setAttribute("id",id);
 		//home이동
-		response.sendRedirect("Home.jsp?snumber=" + snumber);
+		response.sendRedirect("Home.jsp");
+		return;
 		//홈 이동
 		//home(snumber);
 	} else {

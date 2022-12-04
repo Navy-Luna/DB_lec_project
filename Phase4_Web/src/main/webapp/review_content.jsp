@@ -5,12 +5,12 @@
 //로그인 관련
 request.setCharacterEncoding("utf-8");
 String id = (String)session.getAttribute("id");
-String rnum = request.getParameter("rnum");
+String rnum = request.getParameter("rno");
 
 
-String URL = "jdbc:oracle:thin:@112.157.15.34:1521:xe";
-String USER_UNIVERSITY = "dbproject";
-String USER_PASSWD = "comp322";
+String URL = (String)session.getAttribute("URL");
+String USER_UNIVERSITY = (String)session.getAttribute("USER_UNIVERSITY");
+String USER_PASSWD = (String)session.getAttribute("USER_PASSWD");
 Connection conn = null;
 Statement stmt = null;
 
@@ -139,9 +139,8 @@ location.href = detailed_information.jsp;
 						<li class="has-children">
 							<a href="#"><%out.println(id); %></a>
 							<ul class="dropdown">
-								<li><a href="#">Sign Out</a></li>
+								<li><a href="Home.jsp?session=-1">Sign Out</a></li>
 								<li><a href="seeMyclub.jsp">My Clubs</a></li>
-								<li><a href="#">Settings</a></li>
 							</ul>
 						<%} %>
 					</ul>
@@ -192,7 +191,7 @@ location.href = detailed_information.jsp;
 	
 	<div class="card-body">
                                 <!-- Comment form-->
-                                <form action="comment_submit.jsp?rnum=<%out.println(rnum); %>" class="narrow-w form-search d-flex mb-3" data-aos-delay="200" method="post">
+                                <form action="comment_submit.jsp?rno=<%out.println(rnum); %>" class="narrow-w form-search d-flex mb-3" data-aos-delay="200" method="post">
 									<textarea class="form-control" rows="3" placeholder="Join the discussion and leave a comment!" name="tcontent"></textarea>
 									<button type="submit" class="btn btn-primary">Submit</button>
 								</form>
@@ -225,7 +224,7 @@ location.href = detailed_information.jsp;
 			                                out.println("<div>");
 			                                out.println("<a style=\"font-size:11px\" value=\"더보기\" onclick=\"if(this.parentNode.getElementsByTagName('div')[0].style.display != ''){this.parentNode.getElementsByTagName('div')[0].style.display = '';this.value = '숨기기';}else{this.parentNode.getElementsByTagName('div')[0].style.display = 'none'; this.value = '더보기';}\" type=\"button\" >답글 작성</a>");
 			                                out.println("<div style=\"display: none;\">");
-			                                out.println("<form action=\"reply_submit.jsp?tnum="+tnumb+"&rnum="+rnum+"\" class=\"narrow-w form-search d-flex align-items-stretch mb-3\" data-aos=\"fade-up\" data-aos-delay=\"200\"method=\"post\">");
+			                                out.println("<form action=\"reply_submit.jsp?tnum="+tnumb+"&rno="+rnum+"\" class=\"narrow-w form-search d-flex align-items-stretch mb-3\" data-aos=\"fade-up\" data-aos-delay=\"200\"method=\"post\">");
 			                                out.println("<textarea style=\"width: 1000px;\"class=\"form-control\" rows=\"2\" placeholder=\"Join the discussion and leave a comment!\" name=\"dcontent\"></textarea>");
 			                                out.println("<button type=\"submit\" class=\"btn btn-primary\" style=\"padding: 0px 20px 0px 20px;\">Submit</button>");
 			                                out.println("</form>");
