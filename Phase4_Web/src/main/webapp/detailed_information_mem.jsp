@@ -229,7 +229,7 @@ else // 일단 로그인 된 상태
 					<nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
 						<ol class="breadcrumb text-center justify-content-center">
 							<li class="breadcrumb-item "><a href="Home.jsp">Home</a></li>
-							<li class="breadcrumb-item active text-white-50" aria-current="page"><a href="Home.jsp">Club Search</li>
+							<li class="breadcrumb-item active text-white-50" aria-current="page"><a href="Home.jsp">Club Search</a></li>
 						</ol>
 					</nav>
 				</div>
@@ -341,7 +341,7 @@ else // 일단 로그인 된 상태
 						<address>COMP322 데이타베이스004 Team경상도사나이</address>
 						<ul class="list-unstyled links">
 							<li style="white-space:nowrap;">김동근 <a href="mailto:info@mydomain.com">tyt0815@icloud.com</a></li>
-							<li style="white-space:nowrap;">윤주영 <a href="mailto:info@mydomain.com">email@mydomain.com</a></li>
+							<li style="white-space:nowrap;">윤주영 <a href="mailto:info@mydomain.com">yjooy34@gmail.com</a></li>
 							<li style="white-space:nowrap;">김도선 <a href="mailto:info@mydomain.com">email@mydomain.com</a></li>
 						</ul>
 					</div> <!-- /.widget -->

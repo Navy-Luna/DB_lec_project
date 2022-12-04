@@ -521,15 +521,7 @@ sql = "select * from student";
 					</div>
 					
 				</div>
-				<div class="row align-items-center py-5">
-						<div class="col-lg-3">Pagination (1 of 10)</div>
-						<div class="col-lg-6 text-center">
-							<div class="custom-pagination">
-								<a href="#" class="active">1</a> <a href="#">2</a> <a href="#">3</a>
-								<a href="#">4</a> <a href="#">5</a>
-							</div>
-						</div>
-					</div>
+				
 			</div>
 		</div>
 	</div>
