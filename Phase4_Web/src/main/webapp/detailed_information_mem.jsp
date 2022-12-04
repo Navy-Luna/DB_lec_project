@@ -228,8 +228,8 @@ else // 일단 로그인 된 상태
 
 					<nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
 						<ol class="breadcrumb text-center justify-content-center">
-							<li class="breadcrumb-item "><a href="Home.jsp">Home</a></li> <!-수정필요!-->
-							<li class="breadcrumb-item active text-white-50" aria-current="page"><a href="Home.jsp">Club Search</li><!-수정필요!-->
+							<li class="breadcrumb-item "><a href="Home.jsp">Home</a></li>
+							<li class="breadcrumb-item active text-white-50" aria-current="page"><a href="Home.jsp">Club Search</li>
 						</ol>
 					</nav>
 				</div>
@@ -272,7 +272,6 @@ else // 일단 로그인 된 상태
 				<%} %>
 				
 			</div>
-
 		</div>
 	</div>
 

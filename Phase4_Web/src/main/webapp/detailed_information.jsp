@@ -19,7 +19,6 @@ Statement stmt = null;
 try {
     // Load a JDBC Driver for oracle DBMS
     Class.forName("oracle.jdbc.driver.OracleDriver");
-    System.out.println("Driver Loading: Success!");
 } catch (ClassNotFoundException e) {
     System.err.println("error: " + e.getMessage());
     System.exit(1);
@@ -28,7 +27,6 @@ try {
 // Make a Connection
 try {
     conn = DriverManager.getConnection(URL, USER_UNIVERSITY, USER_PASSWD);
-    System.out.println("Oracle Connected.");
 } catch (SQLException ex) {
     ex.printStackTrace();
     System.err.println("Cannot get a connection: " + ex.getLocalizedMessage());
@@ -189,8 +187,8 @@ int anum = rs.getInt(1);
 
 					<nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
 						<ol class="breadcrumb text-center justify-content-center">
-							<li class="breadcrumb-item "><a href="Home.jsp">Club Search</a></li> <!-수정필요!-->
-							<li class="breadcrumb-item active text-white-50" aria-current="page"><%out.println(cname); %></li><!-수정필요!-->
+							<li class="breadcrumb-item "><a href="Home.jsp">Club Search</a></li>
+							<li class="breadcrumb-item active text-white-50" aria-current="page"><%out.println(cname); %></li>
 						</ol>
 					</nav>
 				</div>
@@ -220,7 +218,6 @@ int anum = rs.getInt(1);
 				</div>
 					<p class="text-black-50"><a  class="btn btn-primary" href="apply.jsp?clubID=<%out.println(clubID); %>">Apply</a></p>
 			</div>
-
 		</div>
 	</div>
 
