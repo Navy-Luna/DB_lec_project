@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%
  	String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
-	String USER_UNIVERSITY = "club";
+	String USER_UNIVERSITY = "KNU_CLUB";
 	String USER_PASSWD = "comp322";
 	session.setAttribute("URL",URL);
 	session.setAttribute("USER_UNIVERSITY",USER_UNIVERSITY);
